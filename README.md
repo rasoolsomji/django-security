@@ -12,7 +12,9 @@
 ## Cookies <a name="cookies"></a>
 ### HSTS <a name="hsts"></a>
 Even if you are redirecting all non-HTTPS traffic to HTTPs in your web server configuration you are still vulnerable to an SSL-stripping attack.
-Django >= 1.8 allows you set the setting ```SECURE_HSTS_SECONDS``` and recommended values can be found on the [OWASP Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.html)
+
+Django >= 1.8 allows you set the setting ```SECURE_HSTS_SECONDS``` and recommended values can be found on the [OWASP Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.html).
+
 Alternatively you can add the following line to your server block in your nginx configuration:
 
 ```add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;```
