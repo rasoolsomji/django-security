@@ -23,7 +23,8 @@ Django >= 1.8 allows you set the setting ```SECURE_HSTS_SECONDS``` (and ```SECUR
 
 Alternatively you can add the following line to your server block in your nginx configuration:
 
-```add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+```
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
 ```
 
 #### Things to note
@@ -57,7 +58,8 @@ Django >= 1.8 allows you set the setting ```SECURE_CONTENT_TYPE_NOSNIFF``` which
 
 Alternatively you can add the following line to your server block in your nginx configuration:
 
-```add_header X-Content-Type-Options "nosniff";
+```
+add_header X-Content-Type-Options "nosniff";
 ```
 
 
