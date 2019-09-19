@@ -7,6 +7,7 @@
 2. [Cookies](#cookies)
 3. [User Management](#user-management)
 4. [TLS Settings](#tls-settings)
+    1. [Disable support for old TLS versions](#tls-versions)
 5. [Admin](#admin)
 
 ## HTTP Headers <a name="http-headers"></a>
@@ -69,8 +70,27 @@ add_header X-Content-Type-Options "nosniff";
 ## User Management <a name="user-management"></a>
 
 ## TLS Settings <a name="tls-settings"></a>
+### Disable support for old TLS versions <a name="tls-versions"></a>
+#### Vulnerabilities:
+_Padding oracle attack, BEAST, POODLE_
+#### One-liner:
+Your webserver might by-default support TLS v1.0 and v1.1, and though almost every modern browser will use v1.2, a security auditor might moan about supporting these older protocols.
+#### Further Details:
+[Payment
+Card Industry Data Security Standard 3.2](https://blog.pcisecuritystandards.org/are-you-ready-for-30-june-2018-sayin-goodbye-to-ssl-early-tls)
+#### Implementation:
+Somewhere on your server will be the line:
+```
+ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+```
+And you need to remove the ```TLSv1``` and ```TLSv1.1``` statements.
+If you used Let's Encrypt for your SSL certificate on Nginx, you may find this configuration in ```/etc/letsencrypt/options-ssl-nginx.conf```
+
+#### Things to note:
+- If you do use Let's Encrypt and Certbot, the file ```options-ssl-nginx.conf```, won't update as you update the certbot package.  The update will instead print out what changes were meant to be made, which you can copy over. [Source](https://community.letsencrypt.org/t/remove-support-for-tls-1-0-1-1-in-nginx/88924/11)
 
 ## Admin <a name="admin"></a>
 
 # Contributing
 I am keen to hear suggestions and improvements, please open an issue to discuss!
+I am particularly keen on contributions for Apache or older versions of Django.
