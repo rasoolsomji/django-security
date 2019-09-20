@@ -92,7 +92,7 @@ If you used Let's Encrypt for your SSL certificate, you may find this configurat
 
 ### Disable support for old TLS ciphers <a name="tls-ciphers"></a>
 #### Vulnerabilities:
-_meet in the middle_
+_meet in the middle, downgrade attack_
 #### One-liner:
 Your TLS setup might by-default support some insecure ciphers which may be allow an attacker to decrypt traffic.
 #### Further Details:
