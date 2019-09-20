@@ -8,6 +8,7 @@
 3. [User Management](#user-management)
 4. [TLS Settings](#tls-settings)
     1. [Disable support for old TLS versions](#tls-versions)
+    2. [Disable support for old TLS ciphers](#tls-ciphers)
 5. [Admin](#admin)
 
 ## HTTP Headers <a name="http-headers"></a>
@@ -79,18 +80,36 @@ Your webserver might by-default support TLS v1.0 and v1.1, and though almost eve
 [Payment
 Card Industry Data Security Standard 3.2](https://blog.pcisecuritystandards.org/are-you-ready-for-30-june-2018-sayin-goodbye-to-ssl-early-tls)
 #### Implementation:
-Somewhere on your server will be the line:
+Somewhere on your nginx server will be the line:
 ```
 ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 ```
 And you need to remove the ```TLSv1``` and ```TLSv1.1``` statements.
-If you used Let's Encrypt for your SSL certificate on Nginx, you may find this configuration in ```/etc/letsencrypt/options-ssl-nginx.conf```
+If you used Let's Encrypt for your SSL certificate, you may find this configuration in ```/etc/letsencrypt/options-ssl-nginx.conf```
+
+#### Things to note: <a name="certbot-things-to-note">
+- If you do use Let's Encrypt and Certbot, the file ```options-ssl-nginx.conf```, won't update as you update the certbot package.  The update will instead print out what changes were meant to be made, which you can copy over. [Source](https://community.letsencrypt.org/t/remove-support-for-tls-1-0-1-1-in-nginx/88924/11)
+
+### Disable support for old TLS ciphers <a name="tls-ciphers"></a>
+#### Vulnerabilities:
+_meet in the middle_
+#### One-liner:
+Your TLS setup might by-default support some insecure ciphers which may be allow an attacker to decrypt traffic.
+#### Further Details:
+[SSL Labs](https://github.com/ssllabs/research/wiki/SSL-and-TLS-Deployment-Best-Practices)
+#### Implementation:
+Somewhere on your nginx server will be the line:
+```
+ssl_ciphers "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:...
+```
+And you need to remove all insecure ciphers. SSL Labs provide a [free analysis](https://www.ssllabs.com/ssltest/index.html) of your site to show which ciphers you currently support and how secure they are.  If you used Let's Encrypt for your SSL certificate, you may find this configuration in ```/etc/letsencrypt/options-ssl-nginx.conf```
 
 #### Things to note:
-- If you do use Let's Encrypt and Certbot, the file ```options-ssl-nginx.conf```, won't update as you update the certbot package.  The update will instead print out what changes were meant to be made, which you can copy over. [Source](https://community.letsencrypt.org/t/remove-support-for-tls-1-0-1-1-in-nginx/88924/11)
+- If you do use Let's Encrypt and Certbot, same as [above](#certbot-things-to-note)
 
 ## Admin <a name="admin"></a>
 
 # Contributing
 I am keen to hear suggestions and improvements, please open an issue to discuss!
+
 I am particularly keen on contributions for Apache or older versions of Django.
