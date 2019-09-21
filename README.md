@@ -5,6 +5,8 @@
     2. [Content Security Policy (CSP)](#csp)
     3. [X-Content-Type-Options](#x-content-type-options)
 2. [Cookies](#cookies)
+    1. [Renaming Django defaults](#rename-cookies)
+    2. [Store CSRF cookie within the session cookie](#csrf-use-sessions)
 3. [User Management](#user-management)
 4. [TLS Settings](#tls-settings)
     1. [Disable support for old TLS versions](#tls-versions)
@@ -66,6 +68,29 @@ add_header X-Content-Type-Options "nosniff";
 
 
 ## Cookies <a name="cookies"></a>
+### Rename Django defaults <a name="rename-cookies">
+#### Vulnabilities:
+_Information exposure_
+#### One liner:
+The Django default names for cookies mean than an attacker knows to probe Django-specific weaknesses
+#### Further Detail:
+[CWE](https://cwe.mitre.org/data/definitions/200.html)
+#### Implementation:
+Since at least Django 1.4, you can edit the setting ```SESSION_COOKIE_NAME``` from it's default of ```sessionid```, 
+Since Django 1.2, you can edit the setting ```CSRF_COOKIE_NAME``` from it's default of ```csrftoken```
+
+#### Things to note:
+- Renaming the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-use-sessions)
+
+### Store CSRF cookie within the session cookie <a name="csrf-use-sessions"></a>
+#### Vulnabilities:
+_CSRF attack, Information exposure_
+#### One liner:
+If an attacker could acquire the CSRF cookie value, due to their long expiry (1 year by default), they could use it to submit a form as a user.
+#### Further detail:
+[OWASP](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF))
+#### Implementation:
+Since Django 1.11, you can change the setting ```CSRF_USE_SESSIONS``` to ```True```
 
 
 ## User Management <a name="user-management"></a>
@@ -76,7 +101,7 @@ add_header X-Content-Type-Options "nosniff";
 _Padding oracle attack, BEAST, POODLE_
 #### One-liner:
 Your webserver might by-default support TLS v1.0 and v1.1, and though almost every modern browser will use v1.2, a security auditor might moan about supporting these older protocols.
-#### Further Details:
+#### Further Detail:
 [Payment
 Card Industry Data Security Standard 3.2](https://blog.pcisecuritystandards.org/are-you-ready-for-30-june-2018-sayin-goodbye-to-ssl-early-tls)
 #### Implementation:
@@ -95,7 +120,7 @@ If you used Let's Encrypt for your SSL certificate, you may find this configurat
 _meet in the middle, downgrade attack_
 #### One-liner:
 Your TLS setup might by-default support some insecure ciphers which may be allow an attacker to decrypt traffic.
-#### Further Details:
+#### Further Detail:
 [SSL Labs](https://github.com/ssllabs/research/wiki/SSL-and-TLS-Deployment-Best-Practices)
 #### Implementation:
 Somewhere on your nginx server will be the line:
