@@ -76,9 +76,9 @@ The Django default names for cookies mean than an attacker knows to probe Django
 #### Further Detail:
 [CWE](https://cwe.mitre.org/data/definitions/200.html)
 #### Implementation:
-Since at least Django 1.4, you can edit the setting ```SESSION_COOKIE_NAME``` from it's default of ```sessionid```. 
+Since at least Django 1.4, you can edit the setting ```SESSION_COOKIE_NAME``` from it's default of ```'sessionid'```. 
 
-Since Django 1.2, you can edit the setting ```CSRF_COOKIE_NAME``` from it's default of ```csrftoken```
+Since Django 1.2, you can edit the setting ```CSRF_COOKIE_NAME``` from it's default of ```'csrftoken'```
 
 #### Things to note:
 - Renaming the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-use-sessions)
