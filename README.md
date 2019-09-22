@@ -91,7 +91,14 @@ If an attacker could acquire the CSRF cookie value, due to their long expiry (1 
 #### Further detail:
 [OWASP](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF))
 #### Implementation:
-Since Django 1.11, you can change the setting ```CSRF_USE_SESSIONS``` to ```True```
+Since Django 1.11, you can change the setting ```CSRF_USE_SESSIONS``` to ```True```.
+
+Alternatively or for older versions, you can shorten the expiry of the cookie, as of Django 1.7 this is done with the setting ```CSRF_COOKIE_AGE```.  You can also try writing custom middleware which regenerates the CSRF-token on a per-request basis.
+
+#### Things to note:
+- As Django's own documentation states:
+>Storing the CSRF token in a cookie (Django’s default) is safe, but storing it in the session is common practice in other web frameworks and therefore sometimes demanded by security auditors.
+- Setting the CSRF token to a shorter expiry may annoy users, as any form they leave in the background for a while or load from a bookmark will fail.
 
 
 ## User Management <a name="user-management"></a>
