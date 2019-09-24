@@ -6,12 +6,13 @@
     3. [X-Content-Type-Options](#x-content-type-options)
 2. [Cookies](#cookies)
     1. [Renaming Django defaults](#rename-cookies)
-    2. [Store CSRF cookie within the session cookie](#csrf-use-sessions)
+    2. [CSRF Settings](#csrf-settings)
 3. [User Management](#user-management)
 4. [TLS Settings](#tls-settings)
     1. [Disable support for old TLS versions](#tls-versions)
     2. [Disable support for old TLS ciphers](#tls-ciphers)
 5. [Admin](#admin)
+    1. [Updating insecure version of jQuery](#insecure-jquery)
 
 ## HTTP Headers <a name="http-headers"></a>
 ### HTTP Strict Transport Security (HSTS) <a name="hsts"></a>
@@ -83,7 +84,7 @@ Since Django 1.2, you can edit the setting ```CSRF_COOKIE_NAME``` from it's defa
 #### Things to note:
 - Renaming the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-use-sessions)
 
-### Store CSRF cookie within the session cookie <a name="csrf-use-sessions"></a>
+### CSRF Settings <a name="csrf-settings"></a>
 #### Vulnabilities:
 _CSRF attack, Information exposure_
 #### One liner:
@@ -141,6 +142,23 @@ And you need to remove all insecure ciphers. SSL Labs provide a [free analysis](
 - If you do use Let's Encrypt and Certbot, same as [above](#certbot-things-to-note)
 
 ## Admin <a name="admin"></a>
+### Insecure version of jQuery <a name="insecure-jquery"></a>
+#### Vulnerabilities:
+_XSS_
+#### One-liner:
+Django admin ships with jQuery version v2.2.3 (/your/static/url/admin/js/vendor/jquery/jquery.min.js) which has known security issues.
+#### Further detail:
+[CVE](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-9251)
+#### Implementation:
+
+1. You can update the jQuery file within your `STATICFILES` folder but this needs to be done every time you update your static files with `collectstatic`
+2. You can rewrite requests to the insecure version towards an up-to-date version within your webserver configuration, ie `mod_rewrite` (Apache) / `ngx_http_rewrite_module` (nginx)
+For nginx it might look like this:
+```
+location /your/static/url/admin/js/vendor/jquery/jquery.min.js {
+        return 301 /your/static/url/js/patched-jquery.min.js;
+    }
+```
 
 # Contributing
 I am keen to hear suggestions and improvements, please open an issue to discuss!
