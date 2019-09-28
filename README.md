@@ -5,9 +5,10 @@
     2. [Content Security Policy (CSP)](#csp)
     3. [X-Content-Type-Options](#x-content-type-options)
 2. [Cookies](#cookies)
-    1. [Renaming Django defaults](#rename-cookies)
+    1. [Rename Django defaults](#rename-cookies)
     2. [CSRF Settings](#csrf-settings)
 3. [User Management](#user-management)
+    1. [Forgot password limit](#forgot-password-limit)
 4. [TLS Settings](#tls-settings)
     1. [Disable support for old TLS versions](#tls-versions)
     2. [Disable support for old TLS ciphers](#tls-ciphers)
@@ -33,8 +34,8 @@ add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; prelo
 ```
 
 #### Things to note
-- If you ```includeSubDomains``` / [```SECURE_HSTS_INCLUDE_SUBDOMAINS```](https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECURE_HSTS_INCLUDE_SUBDOMAINS), it may break other site functionality.  For example, if you use SendGrid for sending emails with click tracking links, it does not work with HTTPs without [further configuration](https://sendgrid.com/docs/ui/analytics-and-reporting/click-tracking-ssl/)
-- If you use the nginx ```add_header``` method, make sure it covers all relevant location blocks, such as your static files or user-uploaded files. You may need to add that add_header directive within your ```location /static/``` or ```location /uploads/``` blocks
+- If you `includeSubDomains` / [`SECURE_HSTS_INCLUDE_SUBDOMAINS`](https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECURE_HSTS_INCLUDE_SUBDOMAINS), it may break other site functionality.  For example, if you use SendGrid for sending emails with click tracking links, it does not work with HTTPs without [further configuration](https://sendgrid.com/docs/ui/analytics-and-reporting/click-tracking-ssl/)
+- If you use the nginx `add_header` method, make sure it covers all relevant location blocks, such as your static files or user-uploaded files. You may need to add that add_header directive within your `location /static/` or `location /uploads/` blocks
 
 ### Content Security Policy (CSP) <a name="csp"></a>
 #### Vulnerabilities:
@@ -44,7 +45,7 @@ You whitelist valid sources of executable scripts.
 #### Further-detail:
 [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 #### Implementation:
-Django does not support this out of the box, so you need to either use a 3rd-party library, or you can use a ```<meta http-equiv="Content-Security-Policy">``` tag within your HTML.
+Django does not support this out of the box, so you need to either use a 3rd-party library, or you can use a `<meta http-equiv="Content-Security-Policy">` tag within your HTML.
 
 #### Things to note
 - A (good) CSP-policy will break all inline scripts and styles!  So make sure you are only using external stylesheets and javascript files.
@@ -59,7 +60,7 @@ Preventing the execution of malicious files.
 #### Further detail:
 [Mozilla documentation](https://infosec.mozilla.org/guidelines/web_security#x-content-type-options)
 #### Implementation:
-Django >= 1.8 allows you set the setting ```SECURE_CONTENT_TYPE_NOSNIFF``` which you ought to set to ```True```
+Django >= 1.8 allows you set the setting `SECURE_CONTENT_TYPE_NOSNIFF` which you ought to set to `True`
 
 Alternatively you can add the following line to your server block in your nginx configuration:
 
@@ -77,9 +78,9 @@ The Django default names for cookies mean than an attacker knows to probe Django
 #### Further Detail:
 [CWE](https://cwe.mitre.org/data/definitions/200.html)
 #### Implementation:
-Since at least Django 1.4, you can edit the setting ```SESSION_COOKIE_NAME``` from it's default of ```'sessionid'```. 
+Since at least Django 1.4, you can edit the setting `SESSION_COOKIE_NAME` from it's default of `'sessionid'`. 
 
-Since Django 1.2, you can edit the setting ```CSRF_COOKIE_NAME``` from it's default of ```'csrftoken'```
+Since Django 1.2, you can edit the setting `CSRF_COOKIE_NAME` from it's default of `'csrftoken'`
 
 #### Things to note:
 - Renaming the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-use-sessions)
@@ -92,9 +93,9 @@ If an attacker could acquire the CSRF cookie value, due to their long expiry (1 
 #### Further detail:
 [OWASP](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF))
 #### Implementation:
-Since Django 1.11, you can change the setting ```CSRF_USE_SESSIONS``` to ```True```.
+Since Django 1.11, you can change the setting `CSRF_USE_SESSIONS` to `True`.
 
-Alternatively or for older versions, you can shorten the expiry of the cookie, as of Django 1.7 this is done with the setting ```CSRF_COOKIE_AGE```.  You can also try writing custom middleware which regenerates the CSRF-token on a per-request basis.
+Alternatively or for older versions, you can shorten the expiry of the cookie, as of Django 1.7 this is done with the setting `CSRF_COOKIE_AGE`.  You can also try writing custom middleware which regenerates the CSRF-token on a per-request basis.
 
 #### Things to note:
 - As Django's own documentation states:
@@ -103,6 +104,23 @@ Alternatively or for older versions, you can shorten the expiry of the cookie, a
 
 
 ## User Management <a name="user-management"></a>
+### Forgot password limit <a name="forgot-password-limit"></a>
+#### Vulnerabilities:
+_DoS, waste money_
+#### One-liner:
+An attacker can repeatedly hit your 'Forgot password' endpoint, prompting the sending of many emails which could cost you money or lead to a denial-of-service.
+#### Further Detail:
+[Cloudflare on Denial-of-Service](https://www.cloudflare.com/learning/ddos/glossary/denial-of-service/)
+#### Implementation:
+There are several non-mutually-exclusive methods you can employ:
+- Log each forgotten password request, and only further process the request (and send emails) if there hasn't been a request for that particular username  and/or IP address recently
+- Add an (increasing) delay in responding to repeated forgotten password requests
+- Add a CAPTCHA or some other dynamic field that is required before processing the request.
+
+You can see an example implementation [here](forgotten-password.py) using the PasswordResetView class-based view, introduced in Django 1.11
+
+#### Things to note:
+- You don't want to leak information about valid and invalid usernames (see [username enumeration](#username-enumeration)) so make sure you treat requests for valid and invalid usernames the same.
 
 ## TLS Settings <a name="tls-settings"></a>
 ### Disable support for old TLS versions <a name="tls-versions"></a>
@@ -118,11 +136,11 @@ Somewhere on your nginx server will be the line:
 ```
 ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 ```
-And you need to remove the ```TLSv1``` and ```TLSv1.1``` statements.
-If you used Let's Encrypt for your SSL certificate, you may find this configuration in ```/etc/letsencrypt/options-ssl-nginx.conf```
+And you need to remove the `TLSv1` and `TLSv1.1` statements.
+If you used Let's Encrypt for your SSL certificate, you may find this configuration in `/etc/letsencrypt/options-ssl-nginx.conf`
 
 #### Things to note: <a name="certbot-things-to-note">
-- If you do use Let's Encrypt and Certbot, the file ```options-ssl-nginx.conf```, won't update as you update the certbot package.  The update will instead print out what changes were meant to be made, which you can copy over. [Source](https://community.letsencrypt.org/t/remove-support-for-tls-1-0-1-1-in-nginx/88924/11)
+- If you do use Let's Encrypt and Certbot, the file `options-ssl-nginx.conf`, won't update as you update the certbot package.  The update will instead print out what changes were meant to be made, which you can copy over. [Source](https://community.letsencrypt.org/t/remove-support-for-tls-1-0-1-1-in-nginx/88924/11)
 
 ### Disable support for old TLS ciphers <a name="tls-ciphers"></a>
 #### Vulnerabilities:
@@ -136,7 +154,7 @@ Somewhere on your nginx server will be the line:
 ```
 ssl_ciphers "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:...
 ```
-And you need to remove all insecure ciphers. SSL Labs provide a [free analysis](https://www.ssllabs.com/ssltest/index.html) of your site to show which ciphers you currently support and how secure they are.  If you used Let's Encrypt for your SSL certificate, you may find this configuration in ```/etc/letsencrypt/options-ssl-nginx.conf```
+And you need to remove all insecure ciphers. SSL Labs provide a [free analysis](https://www.ssllabs.com/ssltest/index.html) of your site to show which ciphers you currently support and how secure they are.  If you used Let's Encrypt for your SSL certificate, you may find this configuration in `/etc/letsencrypt/options-ssl-nginx.conf`
 
 #### Things to note:
 - If you do use Let's Encrypt and Certbot, same as [above](#certbot-things-to-note)
