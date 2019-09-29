@@ -7,6 +7,7 @@
 2. [Cookies](#cookies)
     1. [Rename Django defaults](#rename-cookies)
     2. [CSRF Settings](#csrf-settings)
+    3. [Disuse 'expires' attribute](#cookie-expires)
 3. [User Management](#user-management)
     1. [Forgot password limit](#forgot-password-limit)
 4. [TLS Settings](#tls-settings)
@@ -102,11 +103,20 @@ Alternatively or for older versions, you can shorten the expiry of the cookie, a
 >Storing the CSRF token in a cookie (Django’s default) is safe, but storing it in the session is common practice in other web frameworks and therefore sometimes demanded by security auditors.
 - Setting the CSRF token to a shorter expiry may annoy users, as any form they leave in the background for a while or load from a bookmark will fail.
 
+### Disuse 'expires' attribute <a name="cookie-expires"></a>
+#### Vulnerabilities:
+_Account/session takeover_
+#### One-liner:
+The expires attribute writes the session cookie to the browser persistently, this can then be used by an attacker or someone sharing the same device.
+#### Further Detail:
+[OWASP](https://www.owasp.org/index.php/Testing_for_cookies_attributes_%28OTG-SESS-002%29)
+#### Implementation:
+Change the setting `SESSION_EXPIRE_AT_BROWSER_CLOSE` to `True`.  This setting has existed since Django 1.4
 
 ## User Management <a name="user-management"></a>
 ### Forgot password limit <a name="forgot-password-limit"></a>
 #### Vulnerabilities:
-_DoS, waste money_
+_DoS, money waste_
 #### One-liner:
 An attacker can repeatedly hit your 'Forgot password' endpoint, prompting the sending of many emails which could cost you money or lead to a denial-of-service.
 #### Further Detail:
