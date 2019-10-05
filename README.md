@@ -8,6 +8,7 @@
     1. [Rename Django defaults](#rename-cookies)
     2. [CSRF Settings](#csrf-settings)
     3. [Disuse 'expires' attribute](#cookie-expires)
+    4. [Add SameSite attribute](#samesite)
 3. [User Management](#user-management)
     1. [Forgot password limit](#forgot-password-limit)
 4. [TLS Settings](#tls-settings)
@@ -112,6 +113,21 @@ The expires attribute writes the session cookie to the browser persistently, thi
 [OWASP](https://www.owasp.org/index.php/Testing_for_cookies_attributes_%28OTG-SESS-002%29)
 #### Implementation:
 Change the setting `SESSION_EXPIRE_AT_BROWSER_CLOSE` to `True`.  This setting has existed since Django 1.4
+
+### Add SameSite attribute <a name="samesite"></a>
+#### Vulnerabilities:
+_CSRF attack, information exposure_
+#### One-liner:
+Adding this attribute prevents sending cookies (like Django's session id) when requesting resources (eg. images, fonts, scripts) hosted elsewhere.
+#### Further Detail:
+[OWASP](https://www.owasp.org/index.php/SameSite)
+#### Implementation:
+Django 2.1 introduced `CSRF_COOKIE_SAMESITE` and `SESSION_COOKIE_SAMESITE`.  Previous versions may make use of custom middleware - an example, tested in v2.0 can be found [here](samesite-middleware.py) - or by intervening at the webserver level.  An albeit crude addition to an Apache config may look like:
+``` 
+Header edit Set-Cookie ^(.*)$ $1;Samesite=Lax
+```
+#### Things to note:
+- Django 2.1 sets the default SameSite value to 'lax' which is a sensible default, consider before changing it's value to 'strict'
 
 ## User Management <a name="user-management"></a>
 ### Forgot password limit <a name="forgot-password-limit"></a>
