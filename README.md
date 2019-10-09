@@ -9,6 +9,7 @@
     2. [CSRF Settings](#csrf-settings)
     3. [Disuse 'expires' attribute](#cookie-expires)
     4. [Add SameSite attribute](#samesite)
+    5. [Add Secure attribute](#cookies-secure)
 3. [User Management](#user-management)
     1. [Forgot password limit](#forgot-password-limit)
 4. [TLS Settings](#tls-settings)
@@ -121,6 +122,21 @@ _CSRF attack, information exposure_
 Adding this attribute prevents sending cookies (like Django's session id) when requesting resources (eg. images, fonts, scripts) hosted elsewhere.
 #### Further Detail:
 [OWASP](https://www.owasp.org/index.php/SameSite)
+#### Implementation:
+Django 2.1 introduced `CSRF_COOKIE_SAMESITE` and `SESSION_COOKIE_SAMESITE`.  Previous versions may make use of custom middleware - an example, tested in v2.0 can be found [here](samesite-middleware.py) - or by intervening at the webserver level.  An albeit crude addition to an Apache config may look like:
+``` 
+Header edit Set-Cookie ^(.*)$ $1;Samesite=Lax
+```
+#### Things to note:
+- Django 2.1 sets the default SameSite value to 'lax' which is a sensible default, consider before changing it's value to 'strict'
+
+### Add Secure attribute <a name="cookies-secure"></a>
+#### Vulnerabilities:
+_Session hijacking, man-in-the-middle_
+#### One-liner:
+Adding this attribute only allows the transmission of cookies over https, if an attacker manages to get a user to use http, they will not be able to read the cookies.
+#### Further Detail:
+[Pivotpoint blog](https://www.pivotpointsecurity.com/blog/securing-web-cookies-secure-flag/)
 #### Implementation:
 Django 2.1 introduced `CSRF_COOKIE_SAMESITE` and `SESSION_COOKIE_SAMESITE`.  Previous versions may make use of custom middleware - an example, tested in v2.0 can be found [here](samesite-middleware.py) - or by intervening at the webserver level.  An albeit crude addition to an Apache config may look like:
 ``` 
