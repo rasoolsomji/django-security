@@ -1,5 +1,4 @@
 # models.py
-
 class FailedLoginAttempt(models.Model):	
 	# Note that you do not want to ForeignKey into the User model
 	# You want to log all attempts, whether the username exists or not
@@ -8,15 +7,14 @@ class FailedLoginAttempt(models.Model):
 
 
 # views.py
-
 def login(request):
-	ALLOWED_LOGIN_ATTEMPTS = 4
+    ALLOWED_LOGIN_ATTEMPTS = 4
 
     if request.method == 'POST':
         username = request.POST['username']
         stripped_username = username.strip().lower()
         if FailedLoginAttempt.objects.filter(
-        	username=stripped_username
+            username=stripped_username
     	).count() > ALLOWED_LOGIN_ATTEMPTS:
             # Send a message, redirect, add a delay
         else:
