@@ -12,6 +12,7 @@
     5. [Add Secure attribute](#cookies-secure)
 3. [User Management](#user-management)
     1. [Forgot password limit](#forgot-password-limit)
+    2. [Incorrect password limit](#incorrect-password-limit)
 4. [TLS Settings](#tls-settings)
     1. [Disable support for old TLS versions](#tls-versions)
     2. [Disable support for old TLS ciphers](#tls-ciphers)
@@ -160,6 +161,25 @@ There are several non-mutually-exclusive methods you can employ:
 - Add a CAPTCHA or some other dynamic field that is required before processing the request.
 
 You can see an example implementation [here](forgotten-password.py) using the PasswordResetView class-based view, introduced in Django 1.11
+
+#### Things to note:
+- You don't want to leak information about valid and invalid usernames (see [username enumeration](#username-enumeration)) so make sure you treat requests for valid and invalid usernames the same.
+
+### Incorrect password limit <a name="incorrect-password-limit"></a>
+#### Vulnerabilities:
+_Brute force_
+#### One-liner:
+Without a limit, an attacker can repeatedly try different passwords to gain access to a user's account.
+#### Further Detail:
+[OWASP](https://www.owasp.org/index.php/Blocking_Brute_Force_Attacks)
+#### Implementation:
+There are several non-mutually-exclusive methods you can employ:
+- 'Lock' accounts with too many failed attempts
+- Add an (increasing) delay in responding to repeated login attempts
+- Add a CAPTCHA or some other dynamic field that is required before processing the request
+- Monitor IP address / user agent to detect patterns anomalous to the user's usual usage
+
+You can see an example implementation [here](login-attempts.py)
 
 #### Things to note:
 - You don't want to leak information about valid and invalid usernames (see [username enumeration](#username-enumeration)) so make sure you treat requests for valid and invalid usernames the same.
