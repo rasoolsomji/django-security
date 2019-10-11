@@ -13,6 +13,7 @@
 3. [User Management](#user-management)
     1. [Forgot password limit](#forgot-password-limit)
     2. [Incorrect password limit](#incorrect-password-limit)
+    3. [Require strong passwords](#strong-passwords)
 4. [TLS Settings](#tls-settings)
     1. [Disable support for old TLS versions](#tls-versions)
     2. [Disable support for old TLS ciphers](#tls-ciphers)
@@ -183,6 +184,35 @@ You can see an example implementation [here](login-attempts.py)
 
 #### Things to note:
 - You don't want to leak information about valid and invalid usernames (see [username enumeration](#username-enumeration)) so make sure you treat requests for valid and invalid usernames the same.
+
+### Require strong passwords <a name="strong-password"></a>
+#### Vulnerabilities:
+_Brute force, credential stuffing_
+#### One-liner:
+Some security auditors require stronger password validation than Django's default.  It can also ensure they are less easily guessed by an attacker.
+#### Further Detail:
+[Wikipedia](https://en.wikipedia.org/wiki/Password_strength)
+#### Implementation:
+Depending on your version of Django, it usually comes with a few useful validators, such as minimum length, and similarity to other user attributes.  These can be modified (for example increasing the minimum length):
+
+```
+# settings.py
+AUTH_PASSWORD_VALIDATORS = [
+    # ...
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 10,
+        }
+    },
+    # ...
+]
+```
+
+Or you can write your own.  Example validators (tested with v2.0) for requiring special characters and a combination of numbers, uppercase, and lowercase letters can be found [here](password-validators.py).  These can then be added to the `AUTH_PASSWORD_VALIDATORS` setting.
+
+#### Things to note:
+- Requiring special characters or other demanding rules in itself can be a vulnerability, as users may write down their password, or re-use a stock 'strong' password across several sites.
 
 ## TLS Settings <a name="tls-settings"></a>
 ### Disable support for old TLS versions <a name="tls-versions"></a>
