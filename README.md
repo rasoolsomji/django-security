@@ -185,7 +185,7 @@ You can see an example implementation [here](login-attempts.py)
 #### Things to note:
 - You don't want to leak information about valid and invalid usernames (see [username enumeration](#username-enumeration)) so make sure you treat requests for valid and invalid usernames the same.
 
-### Require strong passwords <a name="strong-password"></a>
+### Require strong passwords <a name="strong-passwords"></a>
 #### Vulnerabilities:
 _Brute force, credential stuffing_
 #### One-liner:
