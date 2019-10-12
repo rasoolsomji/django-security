@@ -18,7 +18,9 @@
     1. [Disable support for old TLS versions](#tls-versions)
     2. [Disable support for old TLS ciphers](#tls-ciphers)
 5. [Admin](#admin)
-    1. [Updating insecure version of jQuery](#insecure-jquery)
+    1. [Don't use /admin/](#change-admin-url)
+    2. [Updating insecure version of jQuery](#insecure-jquery)
+    
 
 ## HTTP Headers <a name="http-headers"></a>
 ### HTTP Strict Transport Security (HSTS) <a name="hsts"></a>
@@ -252,6 +254,22 @@ And you need to remove all insecure ciphers. SSL Labs provide a [free analysis](
 - If you do use Let's Encrypt and Certbot, same as [above](#certbot-things-to-note)
 
 ## Admin <a name="admin"></a>
+### Don't use /admin/ <a name="change-admin-url"></a>
+#### Vulnerabilities:
+_Information exposure_
+#### One-liner:
+Because it is conventional to use /admin/ as the url for Django's admin site, it's presense can alert an attacker to the fact that a site is running Django, allowing them to customise their attack methods.
+#### Further detail:
+[CWE](https://cwe.mitre.org/data/definitions/200.html)
+#### Implementation:
+
+In your main `urls.py`, change the URL at which you include `admin.site.urls`:
+```
+urlpatterns += [
+    url(r'^new-secret-location/', admin.site.urls, name='admin')
+]
+```
+
 ### Insecure version of jQuery <a name="insecure-jquery"></a>
 #### Vulnerabilities:
 _XSS_
