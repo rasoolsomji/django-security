@@ -14,6 +14,7 @@
     1. [Forgot password limit](#forgot-password-limit)
     2. [Incorrect password limit](#incorrect-password-limit)
     3. [Require strong passwords](#strong-passwords)
+    4. [Transferable sessions](#transferable-sessions)
 4. [TLS Settings](#tls-settings)
     1. [Disable support for old TLS versions](#tls-versions)
     2. [Disable support for old TLS ciphers](#tls-ciphers)
@@ -215,6 +216,17 @@ Or you can write your own.  Example validators (tested with v2.0) for requiring 
 
 #### Things to note:
 - Requiring special characters or other demanding rules in itself can be a vulnerability, as users may write down their password, or re-use a stock 'strong' password across several sites.
+
+### Transferable Sessions <a name="transferable-sessions"></a>
+#### Vulnerabilities:
+_XSS, session highjacking_
+#### One-liner:
+If an attacker acquires the value of the session cookie, they are able to use it to authenticate requests from their own device.
+#### Further Detail:
+[OWASP](https://www.owasp.org/index.php/Session_hijacking_attack)
+#### Implementation:
+One needs to ensure that each user session is linked to a particular device, so something like a middleware which stores the user agent / IP address of a user at the start of a session, and invalidates the session if it detects a different user agent / IP address on any subsequent request.
+
 
 ## TLS Settings <a name="tls-settings"></a>
 ### Disable support for old TLS versions <a name="tls-versions"></a>
