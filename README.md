@@ -15,6 +15,7 @@
     2. [Incorrect password limit](#incorrect-password-limit)
     3. [Require strong passwords](#strong-passwords)
     4. [Transferable sessions](#transferable-sessions)
+    5. [Concurrent logons](#concurrent-logons)
 4. [TLS Settings](#tls-settings)
     1. [Disable support for old TLS versions](#tls-versions)
     2. [Disable support for old TLS ciphers](#tls-ciphers)
@@ -226,7 +227,23 @@ If an attacker acquires the value of the session cookie, they are able to use it
 [OWASP](https://www.owasp.org/index.php/Session_hijacking_attack)
 #### Implementation:
 One needs to ensure that each user session is linked to a particular device, so something like a middleware which stores the user agent / IP address of a user at the start of a session, and invalidates the session if it detects a different user agent / IP address on any subsequent request.
+#### See also:
+[Concurrent Logons](#concurrent-logons)
 
+### Concurrent Logons <a name="concurrent-logons"></a>
+#### Vulnerabilities:
+_XSS, session highjacking_
+#### One-liner:
+If an attacker acquires the value of the session cookie, they are able to use it to authenticate requests from their own device at the same time as the original user.
+#### Further Detail:
+[OWASP](https://www.owasp.org/index.php/Session_hijacking_attack)
+#### Implementation:
+One needs to ensure that when logging in, all existing sessions associated with that user account are deleted.  An example implementation can be found [here](concurrent-logons.py).
+#### Things to note:
+- You may want to implement something like this for reasons other than security - for example to prevent data from being changed simultaneously from two locations, or to prevent the sharing of login credentials.
+
+#### See also:
+[Transferable Sessions](#transferable-sessions)
 
 ## TLS Settings <a name="tls-settings"></a>
 ### Disable support for old TLS versions <a name="tls-versions"></a>
@@ -303,4 +320,4 @@ location /your/static/url/admin/js/vendor/jquery/jquery.min.js {
 # Contributing
 I am keen to hear suggestions and improvements, please open an issue to discuss!
 
-I am particularly keen on contributions for Apache or older versions of Django.
+I am particularly keen on hearing about new vulnerabilities and original ways of mitigating them.
