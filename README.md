@@ -16,6 +16,7 @@
     3. [Require strong passwords](#strong-passwords)
     4. [Transferable sessions](#transferable-sessions)
     5. [Concurrent logons](#concurrent-logons)
+    6. [Require password change](#require-password-change)
 4. [TLS Settings](#tls-settings)
     1. [Disable support for old TLS versions](#tls-versions)
     2. [Disable support for old TLS ciphers](#tls-ciphers)
@@ -244,6 +245,16 @@ One needs to ensure that when logging in, all existing sessions associated with 
 
 #### See also:
 [Transferable Sessions](#transferable-sessions)
+
+### Require Password Change <a name="require-password-change"></a>
+#### Vulnerabilities:
+_auditability, non-repudiation_
+#### One-liner:
+When you create an account for a user and provide them with the credentials, the user should be required to change their password when they first login, so that their password is known only to them.
+#### Further Detail:
+[Techopedia](https://www.techopedia.com/definition/4031/nonrepudiation)
+#### Implementation:
+Add a boolean field to your user model that is set to `True` when you have manually created their account.  When this user logs in, redirect them to the change password form, optionally with a message explaining why.  On a successful completion of the change password form, this field can be set to `False`.
 
 ## TLS Settings <a name="tls-settings"></a>
 ### Disable support for old TLS versions <a name="tls-versions"></a>
