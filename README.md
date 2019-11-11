@@ -11,6 +11,7 @@
     4. [Add SameSite attribute](#samesite)
     5. [Add Secure attribute](#cookies-secure)
 3. [User Management](#user-management)
+    1. [Username enumeration](#username-enumeration)
     1. [Forgot password limit](#forgot-password-limit)
     2. [Incorrect password limit](#incorrect-password-limit)
     3. [Require strong passwords](#strong-passwords)
@@ -153,6 +154,21 @@ Header edit Set-Cookie ^(.*)$ $1;Samesite=Lax
 - Django 2.1 sets the default SameSite value to 'lax' which is a sensible default, consider before changing it's value to 'strict'
 
 ## User Management <a name="user-management"></a>
+### Username enumeration <a name="username-enumeration"></a>
+#### Vulnerabilities:
+_phishing, brute force_
+#### One-liner:
+You ought to treat non-existent usernames/email addresses the same as existing ones, so as not to reveal this information to an attacker who can for example, look up where else this username is used, if it exists in any data breaches, and can target that user directly. 
+#### Further Detail:
+[OWASP](https://www.owasp.org/index.php/Testing_for_User_Enumeration_and_Guessable_User_Account_(OWASP-AT-002))
+#### Implementation:
+This vulnerability can occur in several places, including:
+- **Registration**. You ought not to state that a username/email address already exists as an error message to the user.
+- **Forgotten password**. You ought not to treat existing usernames/email addresses any differently to non-existing ones.
+- **Login**. You should not display a specific error message if the username does not exist, but rather a generic message like: "Incorrect username or password"
+#### Things to note:
+- By default Django already prevents this on the provided forgotten password view.
+
 ### Forgot password limit <a name="forgot-password-limit"></a>
 #### Vulnerabilities:
 _DoS, money waste_
