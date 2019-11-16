@@ -18,9 +18,10 @@
     4. [Transferable sessions](#transferable-sessions)
     5. [Concurrent logons](#concurrent-logons)
     6. [Require password change](#require-password-change)
-4. [TLS Settings](#tls-settings)
+4. [Webserver Settings](#webserver-settings)
     1. [Disable support for old TLS versions](#tls-versions)
     2. [Disable support for old TLS ciphers](#tls-ciphers)
+    3. [Rate limit](#rate-limit)
 5. [Admin](#admin)
     1. [Don't use /admin/](#change-admin-url)
     2. [Updating insecure version of jQuery](#insecure-jquery)
@@ -273,7 +274,7 @@ When you create an account for a user and provide them with the credentials, the
 #### Implementation:
 Add a boolean field to your user model that is set to `True` when you have manually created their account.  When this user logs in, redirect them to the change password form, optionally with a message explaining why.  On a successful completion of the change password form, this field can be set to `False`.
 
-## TLS Settings <a name="tls-settings"></a>
+## Webserver Settings <a name="webserver-settings"></a>
 ### Disable support for old TLS versions <a name="tls-versions"></a>
 #### Vulnerabilities:
 _Padding oracle attack, BEAST, POODLE_
@@ -309,6 +310,19 @@ And you need to remove all insecure ciphers. SSL Labs provide a [free analysis](
 
 #### Things to note:
 - If you do use Let's Encrypt and Certbot, same as [above](#certbot-things-to-note)
+
+### Rate limit <a name="rate-limit"></a>
+#### Vulnerabilities:
+_ddos, brute force_
+#### One-liner:
+Too many HTTP requests from a single source is almost certainly not a legitimate human user and can cause your webserver to fail as it tries to process them.
+#### Further Detail:
+[Wikipedia](https://en.wikipedia.org/wiki/Rate_limiting)
+#### Implementation:
+You can either apply a policy globally, or at particularly vulnerable endpoints, which include API endpoints, login pages, or other pages requiring user input.
+This [Nginx blog post](https://www.nginx.com/blog/rate-limiting-nginx/) and the [official Apache docs](https://httpd.apache.org/docs/2.4/mod/mod_ratelimit.html) explain how to set it up.
+#### Things to note:
+- Both the Nginx and Apache setups allow for 'bursts' which is a useful feature.  Sometimes HTTP requests will bunch up and be received in a short burst, and this allows to handle these gracefully without returning an error.
 
 ## Admin <a name="admin"></a>
 ### Don't use /admin/ <a name="change-admin-url"></a>
