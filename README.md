@@ -95,7 +95,7 @@ Since at least Django 1.4, you can edit the setting `SESSION_COOKIE_NAME` from i
 Since Django 1.2, you can edit the setting `CSRF_COOKIE_NAME` from it's default of `'csrftoken'`
 
 #### Things to note:
-- Renaming the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-use-sessions)
+- Renaming the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
 
 ### CSRF Settings <a name="csrf-settings"></a>
 #### Vulnabilities:
@@ -138,6 +138,7 @@ Header edit Set-Cookie ^(.*)$ $1;Samesite=Lax
 ```
 #### Things to note:
 - Django 2.1 sets the default SameSite value to 'lax' which is a sensible default, consider before changing it's value to 'strict'
+- Modifying the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
 
 ### Add Secure attribute <a name="cookies-secure"></a>
 #### Vulnerabilities:
@@ -147,13 +148,13 @@ Adding this attribute only allows the transmission of cookies over https, if an 
 #### Further Detail:
 [Pivotpoint blog](https://www.pivotpointsecurity.com/blog/securing-web-cookies-secure-flag/)
 #### Implementation:
-Django 2.1 introduced `CSRF_COOKIE_SAMESITE` and `SESSION_COOKIE_SAMESITE`.  Previous versions may make use of custom middleware - an example, tested in v2.0 can be found [here](samesite-middleware.py) - or by intervening at the webserver level.  An albeit crude addition to an Apache config may look like:
+Django 1.4 introduced `CSRF_COOKIE_SECURE` and Django 1.7 `SESSION_COOKIE_SECURE`.  Previous versions may make use of custom middleware or by intervening at the webserver level.  An albeit crude addition to an Apache config may look like:
 ``` 
-Header edit Set-Cookie ^(.*)$ $1;Samesite=Lax
+Header edit Set-Cookie ^(.*)$ $1;Secure
 ```
 #### Things to note:
-- Django 2.1 sets the default SameSite value to 'lax' which is a sensible default, consider before changing it's value to 'strict'
-
+- Your development server runs on http so if you want to transmit these cookies while testing locally, you should should disable this attribute.  Something simple like only setting them to `True` if `DEBUG == True` in your `settings.py` works.
+- Modifying the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
 ## User Management <a name="user-management"></a>
 ### Username enumeration <a name="username-enumeration"></a>
 #### Vulnerabilities:
@@ -167,7 +168,7 @@ This vulnerability can occur in several places, including:
 - **Registration**. You ought not to state that a username/email address already exists as an error message to the user.
 - **Forgotten password**. You ought not to treat existing usernames/email addresses any differently to non-existing ones.
 - **Login**. You should not display a specific error message if the username does not exist, but rather a generic message like: "Incorrect username or password"
-- **URL Parameter**. Applications sometimes have /<username>/ as part of the URL structure, and if you return a 404 error if the username does not exist but a 403 error if the username does exist but you are not allowed to see it, that can be used to enumerate usernames.
+- **URL Parameter**. Applications sometimes have /\<username\>/ as part of the URL structure, and if you return a 404 error if the username does not exist but a 403 error if the username does exist but you are not allowed to see it, that can be used to enumerate usernames.
 #### Things to note:
 - By default Django already prevents this on the provided forgotten password view, by displaying a success message whether or not the user account exists.
 
@@ -329,7 +330,7 @@ This [Nginx blog post](https://www.nginx.com/blog/rate-limiting-nginx/) and the 
 #### Vulnerabilities:
 _Information exposure_
 #### One-liner:
-Because it is conventional to use /admin/ as the url for Django's admin site, it's presense can alert an attacker to the fact that a site is running Django, allowing them to customise their attack methods.
+Because it is conventional to use /admin/ as the url for Django's admin site, it's presence can alert an attacker to the fact that a site is running Django, allowing them to customise their attack methods.
 #### Further detail:
 [CWE](https://cwe.mitre.org/data/definitions/200.html)
 #### Implementation:
@@ -345,7 +346,7 @@ urlpatterns += [
 #### Vulnerabilities:
 _XSS_
 #### One-liner:
-Django admin ships with jQuery version v2.2.3 (/your/static/url/admin/js/vendor/jquery/jquery.min.js) which has known security issues.
+Django < 2.1 admin ships with jQuery version v2.2.3 (/your/static/url/admin/js/vendor/jquery/jquery.min.js) which has known security issues.
 #### Further detail:
 [CVE](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-9251)
 #### Implementation:
@@ -358,6 +359,9 @@ location /your/static/url/admin/js/vendor/jquery/jquery.min.js {
         return 301 /your/static/url/js/patched-jquery.min.js;
     }
 ```
+
+#### Things to note:
+- Even if using Django >= 2.1 you should still patch this jQuery to handle any new security issues that are found, without having to wait for the Django package to update.
 
 # Contributing
 I am keen to hear suggestions and improvements, please open an issue to discuss!
