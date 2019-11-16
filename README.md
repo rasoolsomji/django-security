@@ -166,8 +166,9 @@ This vulnerability can occur in several places, including:
 - **Registration**. You ought not to state that a username/email address already exists as an error message to the user.
 - **Forgotten password**. You ought not to treat existing usernames/email addresses any differently to non-existing ones.
 - **Login**. You should not display a specific error message if the username does not exist, but rather a generic message like: "Incorrect username or password"
+- **URL Parameter**. Applications sometimes have /<username>/ as part of the URL structure, and if you return a 404 error if the username does not exist but a 403 error if the username does exist but you are not allowed to see it, that can be used to enumerate usernames.
 #### Things to note:
-- By default Django already prevents this on the provided forgotten password view.
+- By default Django already prevents this on the provided forgotten password view, by displaying a success message whether or not the user account exists.
 
 ### Forgot password limit <a name="forgot-password-limit"></a>
 #### Vulnerabilities:
