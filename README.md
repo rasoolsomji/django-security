@@ -6,6 +6,7 @@
 Icons taken from [icons8.com](icons8.com)
 
 <a name="top">
+
 1. [HTTP Headers](#http-headers)
     1. [HTTP Strict Transport Security (HSTS)](#hsts)
     2. [Content Security Policy (CSP)](#csp)
@@ -35,7 +36,6 @@ Icons taken from [icons8.com](icons8.com)
 
 ## HTTP Headers <a name="http-headers"></a>
 ### HTTP Strict Transport Security (HSTS) <a name="hsts"></a>
-
 #### Vulnerabilities: 
 _SSL-stripping, man-in-the-middle_
 #### One-liner:
@@ -54,6 +54,7 @@ add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; prelo
 #### Things to note
 - If you `includeSubDomains` / [`SECURE_HSTS_INCLUDE_SUBDOMAINS`](https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECURE_HSTS_INCLUDE_SUBDOMAINS), it may break other site functionality.  For example, if you use SendGrid for sending emails with click tracking links, it does not work with HTTPs without [further configuration](https://sendgrid.com/docs/ui/analytics-and-reporting/click-tracking-ssl/)
 - If you use the nginx `add_header` method, make sure it covers all relevant location blocks, such as your static files or user-uploaded files. You may need to add that add_header directive within your `location /static/` or `location /uploads/` blocks
+
 [Back to top](#top)
 
 ### Content Security Policy (CSP) <a name="csp"></a>
@@ -71,6 +72,8 @@ Django does not support this out of the box, so you need to either use a 3rd-par
 - You need to include external sources (such as script files from CDNs)
 - You have the ability to [test your policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP#Testing_your_policy) before it takes effect
 
+[Back to top](#top)
+
 ### X-Content-Type-Options <a name="x-content-type-options"></a>
 #### Vulnerabilities:
 _XSS_
@@ -87,6 +90,7 @@ Alternatively you can add the following line to your server block in your nginx 
 add_header X-Content-Type-Options "nosniff";
 ```
 
+[Back to top](#top)
 
 ## Cookies <a name="cookies"></a>
 ### Rename Django defaults <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
@@ -103,6 +107,8 @@ Since Django 1.2, you can edit the setting `CSRF_COOKIE_NAME` from it's default 
 
 #### Things to note:
 - Renaming the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
+
+[Back to top](#top)
 
 ### CSRF Settings <a name="csrf-settings"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnabilities:
@@ -121,6 +127,8 @@ Alternatively or for older versions, you can shorten the expiry of the cookie, a
 >Storing the CSRF token in a cookie (Django’s default) is safe, but storing it in the session is common practice in other web frameworks and therefore sometimes demanded by security auditors.
 - Setting the CSRF token to a shorter expiry may annoy users, as any form they leave in the background for a while or load from a bookmark will fail.
 
+[Back to top](#top)
+
 ### Disuse 'expires' attribute <a name="cookie-expires"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnerabilities:
 _Account/session takeover_
@@ -130,6 +138,8 @@ The expires attribute writes the session cookie to the browser persistently, thi
 [OWASP](https://www.owasp.org/index.php/Testing_for_cookies_attributes_%28OTG-SESS-002%29)
 #### Implementation:
 Change the setting `SESSION_EXPIRE_AT_BROWSER_CLOSE` to `True`.  This setting has existed since Django 1.4
+
+[Back to top](#top)
 
 ### Add SameSite attribute <a name="samesite"></a>
 #### Vulnerabilities:
@@ -147,6 +157,8 @@ Header edit Set-Cookie ^(.*)$ $1;Samesite=Lax
 - Django 2.1 sets the default SameSite value to 'lax' which is a sensible default, consider before changing it's value to 'strict'
 - Modifying the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
 
+[Back to top](#top)
+
 ### Add Secure attribute <a name="cookies-secure"></a>
 #### Vulnerabilities:
 _Session hijacking, man-in-the-middle_
@@ -162,6 +174,9 @@ Header edit Set-Cookie ^(.*)$ $1;Secure
 #### Things to note:
 - Your development server runs on http so if you want to transmit these cookies while testing locally, you should should disable this attribute.  Something simple like only setting them to `True` if `DEBUG == True` in your `settings.py` works.
 - Modifying the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
+
+[Back to top](#top)
+
 ## User Management <a name="user-management"></a>
 ### Username enumeration <a name="username-enumeration"></a>
 #### Vulnerabilities:
@@ -178,6 +193,8 @@ This vulnerability can occur in several places, including:
 - **URL Parameter**. Applications sometimes have /\<username\>/ as part of the URL structure, and if you return a 404 error if the username does not exist but a 403 error if the username does exist but you are not allowed to see it, that can be used to enumerate usernames.
 #### Things to note:
 - By default Django already prevents this on the provided forgotten password view, by displaying a success message whether or not the user account exists.
+
+[Back to top](#top)
 
 ### Forgot password limit <a name="forgot-password-limit"></a>
 #### Vulnerabilities:
@@ -197,6 +214,8 @@ You can see an example implementation [here](forgotten-password.py) using the Pa
 #### Things to note:
 - You don't want to leak information about valid and invalid usernames (see [username enumeration](#username-enumeration)) so make sure you treat requests for valid and invalid usernames the same.
 
+[Back to top](#top)
+
 ### Incorrect password limit <a name="incorrect-password-limit"></a>
 #### Vulnerabilities:
 _Brute force_
@@ -215,6 +234,8 @@ You can see an example implementation [here](login-attempts.py)
 
 #### Things to note:
 - You don't want to leak information about valid and invalid usernames (see [username enumeration](#username-enumeration)) so make sure you treat requests for valid and invalid usernames the same.
+
+[Back to top](#top)
 
 ### Require strong passwords <a name="strong-passwords"></a>
 #### Vulnerabilities:
@@ -245,6 +266,8 @@ Or you can write your own.  Example validators (tested with v2.0) for requiring 
 #### Things to note:
 - Requiring special characters or other demanding rules in itself can be a vulnerability, as users may write down their password, or re-use a stock 'strong' password across several sites.
 
+[Back to top](#top)
+
 ### Transferable Sessions <a name="transferable-sessions"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnerabilities:
 _XSS, session highjacking_
@@ -256,6 +279,8 @@ If an attacker acquires the value of the session cookie, they are able to use it
 One needs to ensure that each user session is linked to a particular device, so something like a middleware which stores the user agent / IP address of a user at the start of a session, and invalidates the session if it detects a different user agent / IP address on any subsequent request.
 #### See also:
 [Concurrent Logons](#concurrent-logons)
+
+[Back to top](#top)
 
 ### Concurrent Logons <a name="concurrent-logons"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnerabilities:
@@ -272,6 +297,8 @@ One needs to ensure that when logging in, all existing sessions associated with 
 #### See also:
 [Transferable Sessions](#transferable-sessions)
 
+[Back to top](#top)
+
 ### Require Password Change <a name="require-password-change"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnerabilities:
 _auditability, non-repudiation_
@@ -281,6 +308,8 @@ When you create an account for a user and provide them with the credentials, the
 [Techopedia](https://www.techopedia.com/definition/4031/nonrepudiation)
 #### Implementation:
 Add a boolean field to your user model that is set to `True` when you have manually created their account.  When this user logs in, redirect them to the change password form, optionally with a message explaining why.  On a successful completion of the change password form, this field can be set to `False`.
+
+[Back to top](#top)
 
 ## Webserver Settings <a name="webserver-settings"></a>
 ### Disable support for old TLS versions <a name="tls-versions"></a>
@@ -302,6 +331,8 @@ If you used Let's Encrypt for your SSL certificate, you may find this configurat
 #### Things to note: <a name="certbot-things-to-note">
 - If you do use Let's Encrypt and Certbot, the file `options-ssl-nginx.conf`, won't update as you update the certbot package.  The update will instead print out what changes were meant to be made, which you can copy over. [Source](https://community.letsencrypt.org/t/remove-support-for-tls-1-0-1-1-in-nginx/88924/11)
 
+[Back to top](#top)
+
 ### Disable support for old TLS ciphers <a name="tls-ciphers"></a>
 #### Vulnerabilities:
 _meet in the middle, downgrade attack_
@@ -319,6 +350,8 @@ And you need to remove all insecure ciphers. SSL Labs provide a [free analysis](
 #### Things to note:
 - If you do use Let's Encrypt and Certbot, same as [above](#certbot-things-to-note)
 
+[Back to top](#top)
+
 ### Rate limit <a name="rate-limit"></a>
 #### Vulnerabilities:
 _ddos, brute force_
@@ -331,6 +364,8 @@ You can either apply a policy globally, or at particularly vulnerable endpoints,
 This [Nginx blog post](https://www.nginx.com/blog/rate-limiting-nginx/) and the [official Apache docs](https://httpd.apache.org/docs/2.4/mod/mod_ratelimit.html) explain how to set it up.
 #### Things to note:
 - Both the Nginx and Apache setups allow for 'bursts' which is a useful feature.  Sometimes HTTP requests will bunch up and be received in a short burst, and this allows to handle these gracefully without returning an error.
+
+[Back to top](#top)
 
 ## Admin <a name="admin"></a>
 ### Don't use /admin/ <a name="change-admin-url"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
@@ -348,6 +383,8 @@ urlpatterns += [
     url(r'^new-secret-location/', admin.site.urls, name='admin')
 ]
 ```
+
+[Back to top](#top)
 
 ### Insecure version of jQuery <a name="insecure-jquery"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnerabilities:
@@ -369,6 +406,8 @@ location /your/static/url/admin/js/vendor/jquery/jquery.min.js {
 
 #### Things to note:
 - Even if using Django >= 2.1 you should still patch this jQuery to handle any new security issues that are found, without having to wait for the Django package to update.
+
+[Back to top](#top)
 
 # Contributing
 I am keen to hear suggestions and improvements, please open an issue to discuss!
