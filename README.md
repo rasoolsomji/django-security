@@ -1,7 +1,7 @@
 # Security tips for your Django project
 
 ## Key:
-<img src="icons/icons8-hazard-warning-flasher-30.png">
+<img src="icons/icons8-hazard-warning-flasher-30.png"> - Low importance.  An unlikely or inefficient attack surface, but which might need to be addressed to complete a security audit.
 
 Icons taken from [icons8.com](icons8.com)
 
@@ -10,9 +10,9 @@ Icons taken from [icons8.com](icons8.com)
     2. [Content Security Policy (CSP)](#csp)
     3. [X-Content-Type-Options](#x-content-type-options)
 2. [Cookies](#cookies)
-    1. [Rename Django defaults](#rename-cookies)
-    2. [CSRF Settings](#csrf-settings)
-    3. [Disuse 'expires' attribute](#cookie-expires) <img src="icons/icons8-hazard-warning-flasher-30.png">
+    1. [Rename Django defaults](#rename-cookies) <img src="icons/icons8-hazard-warning-flasher-20.png">
+    2. [CSRF Settings](#csrf-settings) <img src="icons/icons8-hazard-warning-flasher-20.png">
+    3. [Disuse 'expires' attribute](#cookie-expires) <img src="icons/icons8-hazard-warning-flasher-20.png">
     4. [Add SameSite attribute](#samesite)
     5. [Add Secure attribute](#cookies-secure)
 3. [User Management](#user-management)
@@ -20,16 +20,16 @@ Icons taken from [icons8.com](icons8.com)
     1. [Forgot password limit](#forgot-password-limit)
     2. [Incorrect password limit](#incorrect-password-limit)
     3. [Require strong passwords](#strong-passwords)
-    4. [Transferable sessions](#transferable-sessions)
-    5. [Concurrent logons](#concurrent-logons)
-    6. [Require password change](#require-password-change)
+    4. [Transferable sessions](#transferable-sessions) <img src="icons/icons8-hazard-warning-flasher-20.png">
+    5. [Concurrent logons](#concurrent-logons) <img src="icons/icons8-hazard-warning-flasher-20.png">
+    6. [Require password change](#require-password-change) <img src="icons/icons8-hazard-warning-flasher-20.png">
 4. [Webserver Settings](#webserver-settings)
     1. [Disable support for old TLS versions](#tls-versions)
     2. [Disable support for old TLS ciphers](#tls-ciphers)
     3. [Rate limit](#rate-limit)
 5. [Admin](#admin)
-    1. [Don't use /admin/](#change-admin-url)
-    2. [Updating insecure version of jQuery](#insecure-jquery)
+    1. [Don't use /admin/](#change-admin-url) <img src="icons/icons8-hazard-warning-flasher-20.png">
+    2. [Updating insecure version of jQuery](#insecure-jquery) <img src="icons/icons8-hazard-warning-flasher-20.png">
     
 
 ## HTTP Headers <a name="http-headers"></a>
