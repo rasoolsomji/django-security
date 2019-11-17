@@ -1,7 +1,8 @@
 # Security tips for your Django project
 
 ## Key:
-<img src="icons/hazard-red.png">
+<img src="icons/icons8-hazard-warning-flasher-30.png">
+
 Icons taken from [icons8.com](icons8.com)
 
 1. [HTTP Headers](#http-headers)
@@ -11,9 +12,9 @@ Icons taken from [icons8.com](icons8.com)
 2. [Cookies](#cookies)
     1. [Rename Django defaults](#rename-cookies)
     2. [CSRF Settings](#csrf-settings)
-    3. [Disuse 'expires' attribute](#cookie-expires)
+    3. [Disuse 'expires' attribute](#cookie-expires) <img src="icons/icons8-hazard-warning-flasher-30.png">
     4. [Add SameSite attribute](#samesite)
-    5. [Add Secure attribute](#cookies-secure) <img src="icons/hazard-red.png">
+    5. [Add Secure attribute](#cookies-secure)
 3. [User Management](#user-management)
     1. [Username enumeration](#username-enumeration)
     1. [Forgot password limit](#forgot-password-limit)
