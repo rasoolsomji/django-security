@@ -1,5 +1,9 @@
 # Security tips for your Django project
 
+## Key:
+<img src="icons/hazard-red.png">
+Icons taken from [icons8.com](icons8.com)
+
 1. [HTTP Headers](#http-headers)
     1. [HTTP Strict Transport Security (HSTS)](#hsts)
     2. [Content Security Policy (CSP)](#csp)
@@ -9,7 +13,7 @@
     2. [CSRF Settings](#csrf-settings)
     3. [Disuse 'expires' attribute](#cookie-expires)
     4. [Add SameSite attribute](#samesite)
-    5. [Add Secure attribute](#cookies-secure)
+    5. [Add Secure attribute](#cookies-secure) <img src="icons/hazard-red.png">
 3. [User Management](#user-management)
     1. [Username enumeration](#username-enumeration)
     1. [Forgot password limit](#forgot-password-limit)
