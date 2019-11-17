@@ -5,16 +5,17 @@
 
 Icons taken from [icons8.com](icons8.com)
 
+<a name="top">
 1. [HTTP Headers](#http-headers)
     1. [HTTP Strict Transport Security (HSTS)](#hsts)
     2. [Content Security Policy (CSP)](#csp)
     3. [X-Content-Type-Options](#x-content-type-options)
 2. [Cookies](#cookies)
+    4. [Add SameSite attribute](#samesite)
+    5. [Add Secure attribute](#cookies-secure)
     1. [Rename Django defaults](#rename-cookies) <img src="icons/icons8-hazard-warning-flasher-20.png">
     2. [CSRF Settings](#csrf-settings) <img src="icons/icons8-hazard-warning-flasher-20.png">
     3. [Disuse 'expires' attribute](#cookie-expires) <img src="icons/icons8-hazard-warning-flasher-20.png">
-    4. [Add SameSite attribute](#samesite)
-    5. [Add Secure attribute](#cookies-secure)
 3. [User Management](#user-management)
     1. [Username enumeration](#username-enumeration)
     1. [Forgot password limit](#forgot-password-limit)
@@ -53,6 +54,7 @@ add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; prelo
 #### Things to note
 - If you `includeSubDomains` / [`SECURE_HSTS_INCLUDE_SUBDOMAINS`](https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SECURE_HSTS_INCLUDE_SUBDOMAINS), it may break other site functionality.  For example, if you use SendGrid for sending emails with click tracking links, it does not work with HTTPs without [further configuration](https://sendgrid.com/docs/ui/analytics-and-reporting/click-tracking-ssl/)
 - If you use the nginx `add_header` method, make sure it covers all relevant location blocks, such as your static files or user-uploaded files. You may need to add that add_header directive within your `location /static/` or `location /uploads/` blocks
+[Back to top](#top)
 
 ### Content Security Policy (CSP) <a name="csp"></a>
 #### Vulnerabilities:
@@ -87,7 +89,7 @@ add_header X-Content-Type-Options "nosniff";
 
 
 ## Cookies <a name="cookies"></a>
-### Rename Django defaults <a name="rename-cookies">
+### Rename Django defaults <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnabilities:
 _Information exposure_
 #### One liner:
@@ -102,7 +104,7 @@ Since Django 1.2, you can edit the setting `CSRF_COOKIE_NAME` from it's default 
 #### Things to note:
 - Renaming the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
 
-### CSRF Settings <a name="csrf-settings"></a>
+### CSRF Settings <a name="csrf-settings"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnabilities:
 _CSRF attack, Information exposure_
 #### One liner:
@@ -119,7 +121,7 @@ Alternatively or for older versions, you can shorten the expiry of the cookie, a
 >Storing the CSRF token in a cookie (Django’s default) is safe, but storing it in the session is common practice in other web frameworks and therefore sometimes demanded by security auditors.
 - Setting the CSRF token to a shorter expiry may annoy users, as any form they leave in the background for a while or load from a bookmark will fail.
 
-### Disuse 'expires' attribute <a name="cookie-expires"></a>
+### Disuse 'expires' attribute <a name="cookie-expires"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnerabilities:
 _Account/session takeover_
 #### One-liner:
@@ -243,7 +245,7 @@ Or you can write your own.  Example validators (tested with v2.0) for requiring 
 #### Things to note:
 - Requiring special characters or other demanding rules in itself can be a vulnerability, as users may write down their password, or re-use a stock 'strong' password across several sites.
 
-### Transferable Sessions <a name="transferable-sessions"></a>
+### Transferable Sessions <a name="transferable-sessions"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnerabilities:
 _XSS, session highjacking_
 #### One-liner:
@@ -255,7 +257,7 @@ One needs to ensure that each user session is linked to a particular device, so 
 #### See also:
 [Concurrent Logons](#concurrent-logons)
 
-### Concurrent Logons <a name="concurrent-logons"></a>
+### Concurrent Logons <a name="concurrent-logons"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnerabilities:
 _XSS, session highjacking_
 #### One-liner:
@@ -270,7 +272,7 @@ One needs to ensure that when logging in, all existing sessions associated with 
 #### See also:
 [Transferable Sessions](#transferable-sessions)
 
-### Require Password Change <a name="require-password-change"></a>
+### Require Password Change <a name="require-password-change"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnerabilities:
 _auditability, non-repudiation_
 #### One-liner:
@@ -331,7 +333,7 @@ This [Nginx blog post](https://www.nginx.com/blog/rate-limiting-nginx/) and the 
 - Both the Nginx and Apache setups allow for 'bursts' which is a useful feature.  Sometimes HTTP requests will bunch up and be received in a short burst, and this allows to handle these gracefully without returning an error.
 
 ## Admin <a name="admin"></a>
-### Don't use /admin/ <a name="change-admin-url"></a>
+### Don't use /admin/ <a name="change-admin-url"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnerabilities:
 _Information exposure_
 #### One-liner:
@@ -347,7 +349,7 @@ urlpatterns += [
 ]
 ```
 
-### Insecure version of jQuery <a name="insecure-jquery"></a>
+### Insecure version of jQuery <a name="insecure-jquery"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
 #### Vulnerabilities:
 _XSS_
 #### One-liner:
