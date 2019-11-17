@@ -93,7 +93,7 @@ add_header X-Content-Type-Options "nosniff";
 [Back to top](#top)
 
 ## Cookies <a name="cookies"></a>
-### Add SameSite attribute <a name="samesite"></a> <img src="icons/orange-hazard-20.png">
+### Add SameSite attribute <a name="samesite"></a> <img src="icons/orange-hazard-30.png">
 #### Vulnerabilities:
 _CSRF attack, information exposure_
 #### One-liner:
@@ -111,7 +111,7 @@ Header edit Set-Cookie ^(.*)$ $1;Samesite=Lax
 
 [Back to top](#top)
 
-### Add Secure attribute <a name="cookies-secure"></a> <img src="icons/orange-hazard-20.png">
+### Add Secure attribute <a name="cookies-secure"></a> <img src="icons/orange-hazard-30.png">
 #### Vulnerabilities:
 _Session hijacking, man-in-the-middle_
 #### One-liner:
