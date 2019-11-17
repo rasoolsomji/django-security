@@ -1,39 +1,41 @@
 # Security tips for your Django project
 
-## Key:
-<img src="icons/icons8-hazard-warning-flasher-30.png"> - Low importance.  An unlikely or inefficient attack surface, but which might need to be addressed to complete a security audit.
+## Key: <a name="top">
+<img src="icons/green-hazard-30.png"> - Low importance.  An unlikely or inefficient attack surface, but which might need to be addressed to complete a security audit.
+
+<img src="icons/orange-hazard-30.png"> - Medium importance.  While not mandatory, a production-grade Django project should consider mitigating these vulnerabilities.  These may become high importance in the future as web standards evolve to penalise sites without these features.
 
 Icons taken from [icons8.com](icons8.com)
 
-1. [HTTP Headers](#http-headers) <a name="top">
-    1. [HTTP Strict Transport Security (HSTS)](#hsts)
-    2. [Content Security Policy (CSP)](#csp)
-    3. [X-Content-Type-Options](#x-content-type-options)
+1. [HTTP Headers](#http-headers)
+    1. [HTTP Strict Transport Security (HSTS)](#hsts) <img src="icons/orange-hazard-20.png">
+    2. [Content Security Policy (CSP)](#csp) <img src="icons/orange-hazard-20.png">
+    3. [X-Content-Type-Options](#x-content-type-options) <img src="icons/orange-hazard-20.png">
 2. [Cookies](#cookies)
-    1. [Add SameSite attribute](#samesite)
-    2. [Add Secure attribute](#cookies-secure)
-    3. [Rename Django defaults](#rename-cookies) <img src="icons/icons8-hazard-warning-flasher-20.png">
-    4. [CSRF Settings](#csrf-settings) <img src="icons/icons8-hazard-warning-flasher-20.png">
-    5. [Disuse 'expires' attribute](#cookie-expires) <img src="icons/icons8-hazard-warning-flasher-20.png">
+    1. [Add SameSite attribute](#samesite) <img src="icons/orange-hazard-20.png">
+    2. [Add Secure attribute](#cookies-secure) <img src="icons/orange-hazard-20.png">
+    3. [Rename Django defaults](#rename-cookies) <img src="icons/green-hazard-20.png">
+    4. [CSRF Settings](#csrf-settings) <img src="icons/green-hazard-20.png">
+    5. [Disuse 'expires' attribute](#cookie-expires) <img src="icons/green-hazard-20.png">
 3. [User Management](#user-management)
-    1. [Username enumeration](#username-enumeration)
-    1. [Forgot password limit](#forgot-password-limit)
-    2. [Incorrect password limit](#incorrect-password-limit)
-    3. [Require strong passwords](#strong-passwords)
-    4. [Transferable sessions](#transferable-sessions) <img src="icons/icons8-hazard-warning-flasher-20.png">
-    5. [Concurrent logons](#concurrent-logons) <img src="icons/icons8-hazard-warning-flasher-20.png">
-    6. [Require password change](#require-password-change) <img src="icons/icons8-hazard-warning-flasher-20.png">
+    1. [Username enumeration](#username-enumeration) <img src="icons/orange-hazard-20.png">
+    1. [Forgot password limit](#forgot-password-limit) <img src="icons/orange-hazard-20.png">
+    2. [Incorrect password limit](#incorrect-password-limit) <img src="icons/orange-hazard-20.png">
+    3. [Require strong passwords](#strong-passwords) <img src="icons/orange-hazard-20.png">
+    4. [Transferable sessions](#transferable-sessions) <img src="icons/green-hazard-20.png">
+    5. [Concurrent logons](#concurrent-logons) <img src="icons/green-hazard-20.png">
+    6. [Require password change](#require-password-change) <img src="icons/green-hazard-20.png">
 4. [Webserver Settings](#webserver-settings)
-    1. [Disable support for old TLS versions](#tls-versions)
-    2. [Disable support for old TLS ciphers](#tls-ciphers)
-    3. [Rate limit](#rate-limit)
+    1. [Rate limit](#rate-limit) <img src="icons/orange-hazard-20.png">
+    2. [Disable support for old TLS versions](#tls-versions) <img src="icons/green-hazard-20.png">
+    3. [Disable support for old TLS ciphers](#tls-ciphers) <img src="icons/green-hazard-20.png">
 5. [Admin](#admin)
-    1. [Don't use /admin/](#change-admin-url) <img src="icons/icons8-hazard-warning-flasher-20.png">
-    2. [Updating insecure version of jQuery](#insecure-jquery) <img src="icons/icons8-hazard-warning-flasher-20.png">
+    1. [Don't use /admin/](#change-admin-url) <img src="icons/green-hazard-20.png">
+    2. [Updating insecure version of jQuery](#insecure-jquery) <img src="icons/green-hazard-20.png">
     
 
 ## HTTP Headers <a name="http-headers"></a>
-### HTTP Strict Transport Security (HSTS) <a name="hsts"></a>
+### HTTP Strict Transport Security (HSTS) <a name="hsts"></a> <img src="icons/orange-hazard-30.png">
 #### Vulnerabilities: 
 _SSL-stripping, man-in-the-middle_
 #### One-liner:
@@ -55,7 +57,7 @@ add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; prelo
 
 [Back to top](#top)
 
-### Content Security Policy (CSP) <a name="csp"></a>
+### Content Security Policy (CSP) <a name="csp"></a> <img src="icons/orange-hazard-30.png">
 #### Vulnerabilities:
 _XSS_
 #### One-liner:
@@ -72,7 +74,7 @@ Django does not support this out of the box, so you need to either use a 3rd-par
 
 [Back to top](#top)
 
-### X-Content-Type-Options <a name="x-content-type-options"></a>
+### X-Content-Type-Options <a name="x-content-type-options"></a> <img src="icons/orange-hazard-30.png">
 #### Vulnerabilities:
 _XSS_
 #### One-liner:
@@ -91,7 +93,43 @@ add_header X-Content-Type-Options "nosniff";
 [Back to top](#top)
 
 ## Cookies <a name="cookies"></a>
-### Rename Django defaults <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
+### Add SameSite attribute <a name="samesite"></a> <img src="icons/orange-hazard-20.png">
+#### Vulnerabilities:
+_CSRF attack, information exposure_
+#### One-liner:
+Adding this attribute prevents sending cookies (like Django's session id) when requesting resources (eg. images, fonts, scripts) hosted elsewhere.
+#### Further Detail:
+[OWASP](https://www.owasp.org/index.php/SameSite)
+#### Implementation:
+Django 2.1 introduced `CSRF_COOKIE_SAMESITE` and `SESSION_COOKIE_SAMESITE`.  Previous versions may make use of custom middleware - an example, tested in v2.0 can be found [here](samesite-middleware.py) - or by intervening at the webserver level.  An albeit crude addition to an Apache config may look like:
+``` 
+Header edit Set-Cookie ^(.*)$ $1;Samesite=Lax
+```
+#### Things to note:
+- Django 2.1 sets the default SameSite value to 'lax' which is a sensible default, consider before changing it's value to 'strict'
+- Modifying the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
+
+[Back to top](#top)
+
+### Add Secure attribute <a name="cookies-secure"></a> <img src="icons/orange-hazard-20.png">
+#### Vulnerabilities:
+_Session hijacking, man-in-the-middle_
+#### One-liner:
+Adding this attribute only allows the transmission of cookies over https, if an attacker manages to get a user to use http, they will not be able to read the cookies.
+#### Further Detail:
+[Pivotpoint blog](https://www.pivotpointsecurity.com/blog/securing-web-cookies-secure-flag/)
+#### Implementation:
+Django 1.4 introduced `CSRF_COOKIE_SECURE` and Django 1.7 `SESSION_COOKIE_SECURE`.  Previous versions may make use of custom middleware or by intervening at the webserver level.  An albeit crude addition to an Apache config may look like:
+``` 
+Header edit Set-Cookie ^(.*)$ $1;Secure
+```
+#### Things to note:
+- Your development server runs on http so if you want to transmit these cookies while testing locally, you should should disable this attribute.  Something simple like only setting them to `True` if `DEBUG == True` in your `settings.py` works.
+- Modifying the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
+
+[Back to top](#top)
+
+### Rename Django defaults <a name="rename-cookies"> <img src="icons/green-hazard-30.png">
 #### Vulnabilities:
 _Information exposure_
 #### One liner:
@@ -108,7 +146,7 @@ Since Django 1.2, you can edit the setting `CSRF_COOKIE_NAME` from it's default 
 
 [Back to top](#top)
 
-### CSRF Settings <a name="csrf-settings"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
+### CSRF Settings <a name="csrf-settings"></a> <a name="rename-cookies"> <img src="icons/green-hazard-30.png">
 #### Vulnabilities:
 _CSRF attack, Information exposure_
 #### One liner:
@@ -127,7 +165,7 @@ Alternatively or for older versions, you can shorten the expiry of the cookie, a
 
 [Back to top](#top)
 
-### Disuse 'expires' attribute <a name="cookie-expires"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
+### Disuse 'expires' attribute <a name="cookie-expires"></a> <a name="rename-cookies"> <img src="icons/green-hazard-30.png">
 #### Vulnerabilities:
 _Account/session takeover_
 #### One-liner:
@@ -139,44 +177,8 @@ Change the setting `SESSION_EXPIRE_AT_BROWSER_CLOSE` to `True`.  This setting ha
 
 [Back to top](#top)
 
-### Add SameSite attribute <a name="samesite"></a>
-#### Vulnerabilities:
-_CSRF attack, information exposure_
-#### One-liner:
-Adding this attribute prevents sending cookies (like Django's session id) when requesting resources (eg. images, fonts, scripts) hosted elsewhere.
-#### Further Detail:
-[OWASP](https://www.owasp.org/index.php/SameSite)
-#### Implementation:
-Django 2.1 introduced `CSRF_COOKIE_SAMESITE` and `SESSION_COOKIE_SAMESITE`.  Previous versions may make use of custom middleware - an example, tested in v2.0 can be found [here](samesite-middleware.py) - or by intervening at the webserver level.  An albeit crude addition to an Apache config may look like:
-``` 
-Header edit Set-Cookie ^(.*)$ $1;Samesite=Lax
-```
-#### Things to note:
-- Django 2.1 sets the default SameSite value to 'lax' which is a sensible default, consider before changing it's value to 'strict'
-- Modifying the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
-
-[Back to top](#top)
-
-### Add Secure attribute <a name="cookies-secure"></a>
-#### Vulnerabilities:
-_Session hijacking, man-in-the-middle_
-#### One-liner:
-Adding this attribute only allows the transmission of cookies over https, if an attacker manages to get a user to use http, they will not be able to read the cookies.
-#### Further Detail:
-[Pivotpoint blog](https://www.pivotpointsecurity.com/blog/securing-web-cookies-secure-flag/)
-#### Implementation:
-Django 1.4 introduced `CSRF_COOKIE_SECURE` and Django 1.7 `SESSION_COOKIE_SECURE`.  Previous versions may make use of custom middleware or by intervening at the webserver level.  An albeit crude addition to an Apache config may look like:
-``` 
-Header edit Set-Cookie ^(.*)$ $1;Secure
-```
-#### Things to note:
-- Your development server runs on http so if you want to transmit these cookies while testing locally, you should should disable this attribute.  Something simple like only setting them to `True` if `DEBUG == True` in your `settings.py` works.
-- Modifying the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
-
-[Back to top](#top)
-
 ## User Management <a name="user-management"></a>
-### Username enumeration <a name="username-enumeration"></a>
+### Username enumeration <a name="username-enumeration"></a> <img src="icons/orange-hazard-30.png">
 #### Vulnerabilities:
 _phishing, brute force_
 #### One-liner:
@@ -194,7 +196,7 @@ This vulnerability can occur in several places, including:
 
 [Back to top](#top)
 
-### Forgot password limit <a name="forgot-password-limit"></a>
+### Forgot password limit <a name="forgot-password-limit"></a> <img src="icons/orange-hazard-30.png">
 #### Vulnerabilities:
 _DoS, money waste_
 #### One-liner:
@@ -214,7 +216,7 @@ You can see an example implementation [here](forgotten-password.py) using the Pa
 
 [Back to top](#top)
 
-### Incorrect password limit <a name="incorrect-password-limit"></a>
+### Incorrect password limit <a name="incorrect-password-limit"></a> <img src="icons/orange-hazard-30.png">
 #### Vulnerabilities:
 _Brute force_
 #### One-liner:
@@ -235,7 +237,7 @@ You can see an example implementation [here](login-attempts.py)
 
 [Back to top](#top)
 
-### Require strong passwords <a name="strong-passwords"></a>
+### Require strong passwords <a name="strong-passwords"></a> <img src="icons/orange-hazard-30.png">
 #### Vulnerabilities:
 _Brute force, credential stuffing_
 #### One-liner:
@@ -266,7 +268,7 @@ Or you can write your own.  Example validators (tested with v2.0) for requiring 
 
 [Back to top](#top)
 
-### Transferable Sessions <a name="transferable-sessions"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
+### Transferable Sessions <a name="transferable-sessions"></a> <a name="rename-cookies"> <img src="icons/green-hazard-30.png">
 #### Vulnerabilities:
 _XSS, session highjacking_
 #### One-liner:
@@ -280,7 +282,7 @@ One needs to ensure that each user session is linked to a particular device, so 
 
 [Back to top](#top)
 
-### Concurrent Logons <a name="concurrent-logons"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
+### Concurrent Logons <a name="concurrent-logons"></a> <a name="rename-cookies"> <img src="icons/green-hazard-30.png">
 #### Vulnerabilities:
 _XSS, session highjacking_
 #### One-liner:
@@ -297,7 +299,7 @@ One needs to ensure that when logging in, all existing sessions associated with 
 
 [Back to top](#top)
 
-### Require Password Change <a name="require-password-change"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
+### Require Password Change <a name="require-password-change"></a> <a name="rename-cookies"> <img src="icons/green-hazard-30.png">
 #### Vulnerabilities:
 _auditability, non-repudiation_
 #### One-liner:
@@ -310,7 +312,22 @@ Add a boolean field to your user model that is set to `True` when you have manua
 [Back to top](#top)
 
 ## Webserver Settings <a name="webserver-settings"></a>
-### Disable support for old TLS versions <a name="tls-versions"></a>
+### Rate limit <a name="rate-limit"></a> <img src="icons/orange-hazard-30.png">
+#### Vulnerabilities:
+_ddos, brute force_
+#### One-liner:
+Too many HTTP requests from a single source is almost certainly not a legitimate human user and can cause your webserver to fail as it tries to process them.
+#### Further Detail:
+[Wikipedia](https://en.wikipedia.org/wiki/Rate_limiting)
+#### Implementation:
+You can either apply a policy globally, or at particularly vulnerable endpoints, which include API endpoints, login pages, or other pages requiring user input.
+This [Nginx blog post](https://www.nginx.com/blog/rate-limiting-nginx/) and the [official Apache docs](https://httpd.apache.org/docs/2.4/mod/mod_ratelimit.html) explain how to set it up.
+#### Things to note:
+- Both the Nginx and Apache setups allow for 'bursts' which is a useful feature.  Sometimes HTTP requests will bunch up and be received in a short burst, and this allows to handle these gracefully without returning an error.
+
+[Back to top](#top)
+
+### Disable support for old TLS versions <a name="tls-versions"></a> <img src="icons/green-hazard-30.png">
 #### Vulnerabilities:
 _Padding oracle attack, BEAST, POODLE_
 #### One-liner:
@@ -331,7 +348,7 @@ If you used Let's Encrypt for your SSL certificate, you may find this configurat
 
 [Back to top](#top)
 
-### Disable support for old TLS ciphers <a name="tls-ciphers"></a>
+### Disable support for old TLS ciphers <a name="tls-ciphers"></a> <img src="icons/green-hazard-30.png">
 #### Vulnerabilities:
 _meet in the middle, downgrade attack_
 #### One-liner:
@@ -350,23 +367,8 @@ And you need to remove all insecure ciphers. SSL Labs provide a [free analysis](
 
 [Back to top](#top)
 
-### Rate limit <a name="rate-limit"></a>
-#### Vulnerabilities:
-_ddos, brute force_
-#### One-liner:
-Too many HTTP requests from a single source is almost certainly not a legitimate human user and can cause your webserver to fail as it tries to process them.
-#### Further Detail:
-[Wikipedia](https://en.wikipedia.org/wiki/Rate_limiting)
-#### Implementation:
-You can either apply a policy globally, or at particularly vulnerable endpoints, which include API endpoints, login pages, or other pages requiring user input.
-This [Nginx blog post](https://www.nginx.com/blog/rate-limiting-nginx/) and the [official Apache docs](https://httpd.apache.org/docs/2.4/mod/mod_ratelimit.html) explain how to set it up.
-#### Things to note:
-- Both the Nginx and Apache setups allow for 'bursts' which is a useful feature.  Sometimes HTTP requests will bunch up and be received in a short burst, and this allows to handle these gracefully without returning an error.
-
-[Back to top](#top)
-
 ## Admin <a name="admin"></a>
-### Don't use /admin/ <a name="change-admin-url"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
+### Don't use /admin/ <a name="change-admin-url"></a> <a name="rename-cookies"> <img src="icons/green-hazard-30.png">
 #### Vulnerabilities:
 _Information exposure_
 #### One-liner:
@@ -384,7 +386,7 @@ urlpatterns += [
 
 [Back to top](#top)
 
-### Insecure version of jQuery <a name="insecure-jquery"></a> <a name="rename-cookies"> <img src="icons/icons8-hazard-warning-flasher-30.png">
+### Insecure version of jQuery <a name="insecure-jquery"></a> <a name="rename-cookies"> <img src="icons/green-hazard-30.png">
 #### Vulnerabilities:
 _XSS_
 #### One-liner:
