@@ -5,18 +5,16 @@
 
 Icons taken from [icons8.com](icons8.com)
 
-<a name="top">
-
-1. [HTTP Headers](#http-headers)
+1. [HTTP Headers](#http-headers) <a name="top">
     1. [HTTP Strict Transport Security (HSTS)](#hsts)
     2. [Content Security Policy (CSP)](#csp)
     3. [X-Content-Type-Options](#x-content-type-options)
 2. [Cookies](#cookies)
-    4. [Add SameSite attribute](#samesite)
-    5. [Add Secure attribute](#cookies-secure)
-    1. [Rename Django defaults](#rename-cookies) <img src="icons/icons8-hazard-warning-flasher-20.png">
-    2. [CSRF Settings](#csrf-settings) <img src="icons/icons8-hazard-warning-flasher-20.png">
-    3. [Disuse 'expires' attribute](#cookie-expires) <img src="icons/icons8-hazard-warning-flasher-20.png">
+    1. [Add SameSite attribute](#samesite)
+    2. [Add Secure attribute](#cookies-secure)
+    3. [Rename Django defaults](#rename-cookies) <img src="icons/icons8-hazard-warning-flasher-20.png">
+    4. [CSRF Settings](#csrf-settings) <img src="icons/icons8-hazard-warning-flasher-20.png">
+    5. [Disuse 'expires' attribute](#cookie-expires) <img src="icons/icons8-hazard-warning-flasher-20.png">
 3. [User Management](#user-management)
     1. [Username enumeration](#username-enumeration)
     1. [Forgot password limit](#forgot-password-limit)
