@@ -323,7 +323,7 @@ Too many HTTP requests from a single source is almost certainly not a legitimate
 You can either apply a policy globally, or at particularly vulnerable endpoints, which include API endpoints, login pages, or other pages requiring user input.
 This [Nginx blog post](https://www.nginx.com/blog/rate-limiting-nginx/) and the [official Apache docs](https://httpd.apache.org/docs/2.4/mod/mod_ratelimit.html) explain how to set it up.
 #### Things to note:
-- Both the Nginx and Apache setups allow for 'bursts' which is a useful feature.  Sometimes HTTP requests will bunch up and be received in a short burst, and this allows to handle these gracefully without returning an error.
+- Both the Nginx and Apache setups allow for 'bursts' which is a useful feature.  Sometimes HTTP requests will bunch up and be received in a short burst, and this allows you to handle these gracefully without returning an error.
 
 [Back to top](#top)
 
