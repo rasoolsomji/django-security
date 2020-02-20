@@ -89,7 +89,9 @@ Preventing the execution of malicious files.
 #### Further detail:
 [Mozilla documentation](https://infosec.mozilla.org/guidelines/web_security#x-content-type-options)
 #### Implementation:
-Django >= 1.8 allows you set the setting `SECURE_CONTENT_TYPE_NOSNIFF` which you ought to set to `True`
+Django >= 1.8 allows you set the setting `SECURE_CONTENT_TYPE_NOSNIFF` which you ought to set to `True`.
+
+Starting from Django 3.0, `SECURE_CONTENT_TYPE_NOSNIFF` defaults to `True`.
 
 Alternatively you can add the following line to your server block in your nginx configuration:
 
