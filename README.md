@@ -1,5 +1,12 @@
 # Security tips for your Django project
 
+## Preamble
+This is a collection of security vulnerabilities and possible mitigations that you can employ in your Django project. I've included a key below to differentiate between those that pose a likely and important threat, and those which you can get away with ignoring until your project matures.
+
+There are code snippets, linked to from the relevant vulnerability, which you might find useful, they are not installable Django apps.
+
+Most of the suggested solutions cover **versions ≈1.8-2.2**, but I have included specific version numbers where applicable with each solution.
+
 ## Key: <a name="top">
 <img src="icons/green-hazard-30.png"> - Low importance.  An unlikely or inefficient attack surface, but which might need to be addressed to complete a security audit.
 
