@@ -398,6 +398,8 @@ urlpatterns += [
 _XSS_
 #### One-liner:
 Django < 2.1 admin ships with jQuery version v2.2.3 (/your/static/url/admin/js/vendor/jquery/jquery.min.js) which has known security issues.
+
+Django 3.0 uses jQuery version 3.4.1 which is the latest secure version to-date, but it is worth double-checking if any patched jQuery updates are released, and upgrade if necessary.
 #### Further detail:
 [CVE](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-9251)
 #### Implementation:
