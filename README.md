@@ -12,7 +12,7 @@ Most of the suggested solutions cover **versions ≈1.8-2.2**, but I have includ
 
 <img src="icons/orange-hazard-30.png"> - Medium importance.  While not mandatory, a production-grade Django project should consider mitigating these vulnerabilities.  These may become high importance in the future as web standards evolve to penalise sites without these features.
 
-Icons taken from [icons8.com](icons8.com)
+Icons taken from [icons8.com](https://icons8.com)
 
 1. [HTTP Headers](#http-headers)
     1. [HTTP Strict Transport Security (HSTS)](#hsts) <img src="icons/orange-hazard-20.png">
@@ -115,7 +115,7 @@ Django 2.1 introduced `CSRF_COOKIE_SAMESITE` and `SESSION_COOKIE_SAMESITE`.  Pre
 Header edit Set-Cookie ^(.*)$ $1;Samesite=Lax
 ```
 #### Things to note:
-- Django 2.1 sets the default SameSite value to 'lax' which is a sensible default, consider before changing it's value to 'strict'
+- Django 2.1 sets the default SameSite value to 'lax' which is a sensible default, consider before changing its value to 'strict'
 - Modifying the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
 
 [Back to top](#top)
@@ -146,9 +146,9 @@ The Django default names for cookies mean than an attacker knows to probe Django
 #### Further Detail:
 [CWE](https://cwe.mitre.org/data/definitions/200.html)
 #### Implementation:
-Since at least Django 1.4, you can edit the setting `SESSION_COOKIE_NAME` from it's default of `'sessionid'`. 
+Since at least Django 1.4, you can edit the setting `SESSION_COOKIE_NAME` from its default of `'sessionid'`. 
 
-Since Django 1.2, you can edit the setting `CSRF_COOKIE_NAME` from it's default of `'csrftoken'`
+Since Django 1.2, you can edit the setting `CSRF_COOKIE_NAME` from its default of `'csrftoken'`
 
 #### Things to note:
 - Renaming the CSRF cookie is redundant if you [put the CSRF cookie in the session cookie](#csrf-settings)
@@ -384,7 +384,7 @@ And you need to remove all insecure ciphers. SSL Labs provide a [free analysis](
 #### Vulnerabilities:
 _Information exposure_
 #### One-liner:
-Because it is conventional to use /admin/ as the url for Django's admin site, it's presence can alert an attacker to the fact that a site is running Django, allowing them to customise their attack methods.
+Because it is conventional to use /admin/ as the url for Django's admin site, its presence can alert an attacker to the fact that a site is running Django, allowing them to customise their attack methods.
 #### Further detail:
 [CWE](https://cwe.mitre.org/data/definitions/200.html)
 #### Implementation:

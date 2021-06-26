@@ -15,7 +15,7 @@ from .models import PasswordResetRequest
 
 class PasswordResetViewOverride(auth_views.PasswordResetView):
 
-    def post(self, request, *args, **kwargs):
+   def post(self, request, *args, **kwargs):
     	if request.POST.get('username'):
     		# You can choose to add an increasing delay for each repeated request
     		time.sleep(random.random())
